@@ -1,0 +1,11 @@
+matplotlib
+itchat
+flask
+sqlalchemy
+flask_sqlalchemy
+flask_migrate
+flask_script
+celery
+redis
+celery[redis]
+requests
