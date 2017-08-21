@@ -103,3 +103,12 @@ def send_plot(start_timestamp, end_timestamp):
     img_path = os.path.join(PLOT_DIR, '%s_3.png' % str(time.time()))
     plt.savefig(img_path)
     itchat.send_image(img_path, toUserName='filehelper')
+    
+    # remove images days ago
+    for entry in os.scandir(PLOT_DIR):
+        file_name = entry.name
+        if '_' in file_name:
+            file_timestamp = float(file_name.split('_')[0])
+            print(end_timestamp - file_timestamp)
+            if end_timestamp - file_timestamp > DAY_SECONDS:
+                os.remove(entry.path)

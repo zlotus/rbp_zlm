@@ -1,4 +1,5 @@
 import os
+import certifi
 import matplotlib
 from flask import Flask
 from flask_migrate import Migrate
@@ -6,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from celery import Celery
 from redis import Redis
 from config import PLOT_DIR
+
 
 app = Flask(__name__)
 
@@ -20,6 +22,8 @@ _celery = Celery('request_task', broker='redis://localhost:6379')
 _redis = Redis(host='127.0.0.1')
 # matplotlib backend init - agg is a non-gui backend for saving png image
 matplotlib.use('AGG')
+# patch openssl 1.0.1 cert problem of requests
+os.environ['REQUESTS_CA_BUNDLE'] = certifi.old_where()
 
 from app.request_tasks import schedule_timer
 from app.itchat_tasks import start_itchat

@@ -2,3 +2,5 @@ __pycache__
 migrations
 PLOTS
 app.db
+QR.png
+dump.rdb
