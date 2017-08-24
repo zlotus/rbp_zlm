@@ -14,21 +14,54 @@ import numpy as np
 def simple_reply(msg):
     # week/day/4hour
     msg_send = '%s: %s - %s' % (msg['Type'], msg['Text'], msg['FromUserName'])
-    print(msg_send)
-    if msg['Text'] == '周':
-        ed_timestamp = time.time()
-        st_timestamp = ed_timestamp - WEEK_SECONDS
-        send_plot(st_timestamp, ed_timestamp)
-    elif msg['Text'] == '日':
-        ed_timestamp = time.time()
-        st_timestamp = ed_timestamp - DAY_SECONDS
-        send_plot(st_timestamp, ed_timestamp)
-    elif msg['Text'] == '4小时':
-        ed_timestamp = time.time()
-        st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
-        send_plot(st_timestamp, ed_timestamp)
-    else:
-        itchat.send(msg_send, toUserName='filehelper')
+    print(msg)
+    if msg['User'].UserName == 'filehelper':
+        if msg['Text'] == '周':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - WEEK_SECONDS
+            send_plot(st_timestamp, ed_timestamp, toUserName='filehelper')
+        elif msg['Text'] == '日':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - DAY_SECONDS
+            send_plot(st_timestamp, ed_timestamp, toUserName='filehelper')
+        elif msg['Text'] == '4小时':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
+            send_plot(st_timestamp, ed_timestamp, toUserName='filehelper')
+        else:
+            itchat.send_msg(str(msg), toUserName='filehelper')
+    elif msg['User'].RemarkName == '赵立名':
+        if msg['Text'] == '周':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - WEEK_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        elif msg['Text'] == '日':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - DAY_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        elif msg['Text'] == '4小时':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        else:
+            pass
+    elif msg['User'].RemarkName == '何春英':
+        if msg['Text'] == '周':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - WEEK_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        elif msg['Text'] == '日':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - DAY_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        elif msg['Text'] == '4小时':
+            ed_timestamp = time.time()
+            st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
+            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
+        else:
+            pass
+        # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), msg['FromUserName'])
+        # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), toUserName='filehelper')
 
 
 @_celery.task
@@ -37,7 +70,7 @@ def start_itchat():
     itchat.run()
 
 
-def send_plot(start_timestamp, end_timestamp):
+def send_plot(start_timestamp, end_timestamp, toUserName='filehelper'):
     rs = XauusdSequencial.query.filter((XauusdSequencial.id <= end_timestamp)
                                        & (XauusdSequencial.id >= start_timestamp))
     # datetime.fromtimestamp(start_time), price, fxpro, average, dukscopy, ftroanda, fxcm, myfxbook, saxobank
@@ -57,7 +90,7 @@ def send_plot(start_timestamp, end_timestamp):
     plt.grid(True)
     img_path = os.path.join(PLOT_DIR, '%s_1.png' % str(time.time()))
     plt.savefig(img_path)
-    itchat.send_image(img_path, toUserName='filehelper')
+    itchat.send_image(img_path, toUserName=toUserName)
 
     # plot 2 for fxpro
     fig, ax = plt.subplots()
@@ -76,7 +109,7 @@ def send_plot(start_timestamp, end_timestamp):
         line.set_linestyle('--')
     img_path = os.path.join(PLOT_DIR, '%s_2.png' % str(time.time()))
     plt.savefig(img_path)
-    itchat.send_image(img_path, toUserName='filehelper')
+    itchat.send_image(img_path, toUserName=toUserName)
 
     # plot 3 for other indices
     # y3 columns is: average, dukscopy, ftroanda, fxcm, myfxbook, saxobank
@@ -102,13 +135,13 @@ def send_plot(start_timestamp, end_timestamp):
         line.set_linestyle('--')
     img_path = os.path.join(PLOT_DIR, '%s_3.png' % str(time.time()))
     plt.savefig(img_path)
-    itchat.send_image(img_path, toUserName='filehelper')
+    itchat.send_image(img_path, toUserName=toUserName)
     
     # remove images days ago
-    for entry in os.scandir(PLOT_DIR):
-        file_name = entry.name
+    for file_name in os.listdir(PLOT_DIR):
         if '_' in file_name:
             file_timestamp = float(file_name.split('_')[0])
             print(end_timestamp - file_timestamp)
             if end_timestamp - file_timestamp > DAY_SECONDS:
-                os.remove(entry.path)
+                os.remove(os.path.join(PLOT_DIR, file_name))
+

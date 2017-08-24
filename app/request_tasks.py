@@ -3,13 +3,17 @@ import re
 import json
 import schedule
 import time
+from celery.utils.log import get_task_logger
 from app.models import XauusdSequencial
-from app import db, _celery
+from app import db, _celery, app
+
+
+logger = get_task_logger(__name__)
 
 
 @_celery.task
 def schedule_timer():
-    # schedule.every(5).seconds.do(request_task)
+    # schedule.every(30).seconds.do(request_task)
     schedule.every(5).minutes.do(request_task)
 
     while True:
@@ -33,7 +37,9 @@ def request_task():
                             headers=headers, timeout=30).text
         p = re.compile('Price:([0-9.]*)')
         price = float(p.search(text).group(1))
-    except requests.Timeout:
+        logger.info('hexun - ok')
+    except Exception as error:
+        logger.error('[%s] - %s - %s' % (type(error), error.args, error))
         price = latest_row.price
 
         # ref https://widgets-m.fxpro.com/cn/statistics/client-positions
@@ -41,7 +47,9 @@ def request_task():
         text = requests.get('https://widgets-m.fxpro.com/cn/statistics/client-positions', timeout=30).text
         p = re.compile('<div class="label">GOLD</div>\n\t\t\t\t<div class="percentage buy">([0-9.]+)%</div>')
         fxpro = float(p.search(text).group(1))
-    except requests.Timeout:
+        logger.info('fxpro - ok')
+    except Exception as error:
+        logger.error('[%s] - %s - %s' % (type(error), error.args, error))
         fxpro = latest_row.fxpro
 
     # ref https://datacenter.jin10.com/reportType/dc_ssi_trends
@@ -54,7 +62,9 @@ def request_task():
         average, dukscopy, ftroanda, fxcm, myfxbook, saxobank = \
             float(jd['average']), float(jd['dukscopy']), float(jd['ftroanda']), \
             float(jd['fxcm']), float(jd['myfxbook']), float(jd['saxobank'])
-    except requests.Timeout:
+        logger.info('jin10 - ok')
+    except Exception as error:
+        logger.error('[%s] - %s - %s' % (type(error), error.args, error))
         average, dukscopy, ftroanda, fxcm, myfxbook, saxobank = \
             latest_row.average, latest_row.dukscopy, latest_row.ftroanda, \
             latest_row.fxcm, latest_row.myfxbook, latest_row.saxobank

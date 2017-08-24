@@ -4,3 +4,4 @@ PLOTS
 app.db
 QR.png
 dump.rdb
+*.log
