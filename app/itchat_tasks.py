@@ -10,11 +10,10 @@ import os
 import numpy as np
 
 
-@itchat.msg_register(TEXT)
+@itchat.msg_register(TEXT, isFriendChat=True)
 def simple_reply(msg):
     # week/day/4hour
     msg_send = '%s: %s - %s' % (msg['Type'], msg['Text'], msg['FromUserName'])
-    print(msg)
     if msg['User'].UserName == 'filehelper':
         if msg['Text'] == '周':
             ed_timestamp = time.time()
@@ -31,21 +30,6 @@ def simple_reply(msg):
         else:
             itchat.send_msg(str(msg), toUserName='filehelper')
     elif msg['User'].RemarkName == '赵立名':
-        if msg['Text'] == '周':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - WEEK_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        elif msg['Text'] == '日':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - DAY_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        elif msg['Text'] == '4小时':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        else:
-            pass
-    elif msg['User'].RemarkName == '何春英':
         if msg['Text'] == '周':
             ed_timestamp = time.time()
             st_timestamp = ed_timestamp - WEEK_SECONDS
