@@ -45,21 +45,7 @@ def simple_reply(msg):
             send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
         else:
             pass
-    elif msg['User'].RemarkName == '何春英':
-        if msg['Text'] == '周':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - WEEK_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        elif msg['Text'] == '日':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - DAY_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        elif msg['Text'] == '4小时':
-            ed_timestamp = time.time()
-            st_timestamp = ed_timestamp - FOUR_HOUR_SECONDS
-            send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
-        else:
-            pass
+
         # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), msg['FromUserName'])
         # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), toUserName='filehelper')
 
@@ -98,6 +84,7 @@ def send_plot(start_timestamp, end_timestamp, toUserName='filehelper'):
     ax.axhline(30, linestyle='--', color='r')  # horizontal lines
     ax.axhline(70, linestyle='--', color='r')  # horizontal lines
     ax.set_ylim(0, 100)
+    ax.set_yticks([x for x in range(5, 100, 5)])
     fig.autofmt_xdate()
     plt.ylabel('fxpro(%)')
     plt.grid(True)
@@ -116,14 +103,15 @@ def send_plot(start_timestamp, end_timestamp, toUserName='filehelper'):
     fig, ax = plt.subplots()
     ax.plot(x, y3[:, 0], label="average")
     ax.plot(x, y3[:, 1], label="dukscopy")
-    # ax.plot(x, y3[:, 2], label="ftroanda")
-    # ax.plot(x, y3[:, 3], label="fxcm")
-    # ax.plot(x, y3[:, 4], label="myfxbook")
-    # ax.plot(x, y3[:, 5], label="saxobank")
+    ax.plot(x, y3[:, 2], label="ftroanda")
+    ax.plot(x, y3[:, 3], label="fxcm")
+    ax.plot(x, y3[:, 4], label="myfxbook")
+    ax.plot(x, y3[:, 5], label="saxobank")
     ax.legend(loc='upper right')
     ax.axhline(30, linestyle='--', color='r')  # horizontal lines
     ax.axhline(70, linestyle='--', color='r')  # horizontal lines
     ax.set_ylim(0, 100)
+    ax.set_yticks([x for x in range(5, 100, 5)])
     fig.autofmt_xdate()
     plt.ylabel('other indices(%)')
     plt.grid(True)
