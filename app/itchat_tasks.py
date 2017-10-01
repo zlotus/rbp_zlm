@@ -97,21 +97,17 @@ def send_plot(start_timestamp, end_timestamp, toUserName='filehelper'):
     itchat.send_image(img_path, toUserName=toUserName)
 
     # plot 3 for other indices
-    # y3 columns is: average, dukscopy, ftroanda, fxcm, myfxbook, saxobank
+    # y3 columns is: average, dukscopy
     fig, ax = plt.subplots()
     ax.plot(x, y3[:, 0], label="average")
     ax.plot(x, y3[:, 1], label="dukscopy")
-    ax.plot(x, y3[:, 2], label="ftroanda")
-    ax.plot(x, y3[:, 3], label="fxcm")
-    ax.plot(x, y3[:, 4], label="myfxbook")
-    ax.plot(x, y3[:, 5], label="saxobank")
     ax.legend(loc='upper right')
     ax.axhline(30, linestyle='--', color='r')  # horizontal lines
     ax.axhline(70, linestyle='--', color='r')  # horizontal lines
     ax.set_ylim(0, 100)
     ax.set_yticks([x for x in range(5, 100, 5)])
     fig.autofmt_xdate()
-    plt.ylabel('other indices(%)')
+    plt.ylabel('average & dukscopy indices(%)')
     plt.grid(True)
     ticklines = ax.get_xticklines() + ax.get_yticklines()
     gridlines = ax.get_xgridlines() + ax.get_ygridlines()
@@ -123,6 +119,52 @@ def send_plot(start_timestamp, end_timestamp, toUserName='filehelper'):
     plt.savefig(img_path)
     itchat.send_image(img_path, toUserName=toUserName)
     
+    # plot 4 for other indices
+    # y3 columns is: ftroanda, fxcm
+    fig, ax = plt.subplots()
+    ax.plot(x, y3[:, 2], label="ftroanda")
+    ax.plot(x, y3[:, 3], label="fxcm")
+    ax.legend(loc='upper right')
+    ax.axhline(30, linestyle='--', color='r')  # horizontal lines
+    ax.axhline(70, linestyle='--', color='r')  # horizontal lines
+    ax.set_ylim(0, 100)
+    ax.set_yticks([x for x in range(5, 100, 5)])
+    fig.autofmt_xdate()
+    plt.ylabel('ftroanda & fxcm indices(%)')
+    plt.grid(True)
+    ticklines = ax.get_xticklines() + ax.get_yticklines()
+    gridlines = ax.get_xgridlines() + ax.get_ygridlines()
+    for line in ticklines:
+        line.set_linewidth(3)
+    for line in gridlines:
+        line.set_linestyle('--')
+    img_path = os.path.join(PLOT_DIR, '%s_4.png' % str(time.time()))
+    plt.savefig(img_path)
+    itchat.send_image(img_path, toUserName=toUserName)
+    
+    # plot 5 for other indices
+    # y3 columns is: myfxbook, saxobank
+    fig, ax = plt.subplots()
+    ax.plot(x, y3[:, 4], label="myfxbook")
+    ax.plot(x, y3[:, 5], label="saxobank")
+    ax.legend(loc='upper right')
+    ax.axhline(30, linestyle='--', color='r')  # horizontal lines
+    ax.axhline(70, linestyle='--', color='r')  # horizontal lines
+    ax.set_ylim(0, 100)
+    ax.set_yticks([x for x in range(5, 100, 5)])
+    fig.autofmt_xdate()
+    plt.ylabel('myfxbook & saxobank indices(%)')
+    plt.grid(True)
+    ticklines = ax.get_xticklines() + ax.get_yticklines()
+    gridlines = ax.get_xgridlines() + ax.get_ygridlines()
+    for line in ticklines:
+        line.set_linewidth(3)
+    for line in gridlines:
+        line.set_linestyle('--')
+    img_path = os.path.join(PLOT_DIR, '%s_5.png' % str(time.time()))
+    plt.savefig(img_path)
+    itchat.send_image(img_path, toUserName=toUserName)
+
     # remove images days ago
     for file_name in os.listdir(PLOT_DIR):
         if '_' in file_name:
