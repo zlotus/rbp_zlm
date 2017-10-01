@@ -10,11 +10,10 @@ import os
 import numpy as np
 
 
-@itchat.msg_register(TEXT)
+@itchat.msg_register(TEXT, isFriendChat=True)
 def simple_reply(msg):
     # week/day/4hour
     msg_send = '%s: %s - %s' % (msg['Type'], msg['Text'], msg['FromUserName'])
-    print(msg)
     if msg['User'].UserName == 'filehelper':
         if msg['Text'] == '周':
             ed_timestamp = time.time()
@@ -45,7 +44,6 @@ def simple_reply(msg):
             send_plot(st_timestamp, ed_timestamp, msg['FromUserName'])
         else:
             pass
-
         # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), msg['FromUserName'])
         # itchat.send('%s - %s' % (msg['User'].NickName, msg['User'].RemarkName), toUserName='filehelper')
 
