@@ -1,0 +1,35 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+
+
+[packages]
+
+matplotlib = "*"
+itchat = "*"
+flask = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
+flask-migrate = "*"
+flask-script = "*"
+celery = {extras = ["redis"]}
+redis = "*"
+requests = "*"
+schedule = "*"
+requestium = "*"
+apistar = "*"
+pandas = "*"
+tushare = "*"
+"beautifulsoup4" = "*"
+arrow = "*"
+
+
+[requires]
+
+python_version = "3.5"

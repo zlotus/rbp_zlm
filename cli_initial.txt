@@ -1,0 +1,7 @@
+cd ~/pyapps/zlm
+pipenv shell
+celery worker -a app._celery --loglevel=debug -Ofair
+sudo /home/pi/.local/share/virtualenvs/zlm-rudY7QlL/bin/python run.py
+
+cd ~/pyapps/efunds
+apistar run
