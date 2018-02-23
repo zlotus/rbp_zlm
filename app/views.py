@@ -1,7 +1,7 @@
 import os
 import flask
 import requests
-from config import BASE_DIR, DIST_DIR
+from config import BASE_DIR, EFUNDS_DIST_DIR, XAUUSD_DIST_DIR
 from sqlalchemy import func
 from app import app, db
 from app.utils import set_debug_response_header
@@ -33,30 +33,50 @@ def index():
 def send_qr():
     return set_debug_response_header(flask.send_from_directory(BASE_DIR, 'QR.png'))
 
-@app.route('/<path:path>', methods=['GET'])
-def entry_dist(path):
-    print(path)
-    return flask.send_from_directory(DIST_DIR, path)
 
-@app.route('/', methods=['GET'])
-def entry_html():
-    resp = flask.send_from_directory(DIST_DIR, 'index.html', mimetype='text/javascript')
+# publish xauusd front-end to port 80
+@app.route('/xauusd', methods=['GET'])
+def xauusd_entry():
+    resp = flask.send_from_directory(XAUUSD_DIST_DIR, 'index.html', mimetype='text/javascript')
     resp.headers['content-type'] = 'text/html'
     return resp
 
+
+@app.route('/xauusd/<path:path>', methods=['GET'])
+def xauusd_files(path):
+    print(path)
+    return flask.send_from_directory(XAUUSD_DIST_DIR, path)
+
+
+# publish efunds front-end to port 80
+@app.route('/fund', methods=['GET'])
+def entry_efunds_dist():
+    resp = flask.send_from_directory(EFUNDS_DIST_DIR, 'index.html', mimetype='text/javascript')
+    resp.headers['content-type'] = 'text/html'
+    return resp
+
+
+@app.route('/fund/<path:path>', methods=['GET'])
+def entry_dist(path):
+    return flask.send_from_directory(EFUNDS_DIST_DIR, path)
+
+
+# temporary efunds proxy
 @app.route('/efunds', methods=['GET'])
 def get_efunds_plan_list():
     return flask.jsonify(requests.get('http://localhost:8080/efunds').json())
 
+
 @app.route('/efunds/<fund_code>/valuations', methods=['GET'])
 def get_real_time_valuation(fund_code):
-    return flask.jsonify(requests.get('http://localhost:8080/efunds/'+fund_code+'/valuations').json())
+    return flask.jsonify(requests.get('http://localhost:8080/efunds/' + fund_code + '/valuations').json())
+
 
 @app.route('/efunds/<fund_code>/transactions', methods=['GET'])
 def get_transaction_history(fund_code):
-    return flask.jsonify(requests.get('http://localhost:8080/efunds/'+fund_code+'/transactions').json())
+    return flask.jsonify(requests.get('http://localhost:8080/efunds/' + fund_code + '/transactions').json())
+
 
 @app.route('/efunds/<fund_code>/values/<duration>', methods=['GET'])
 def get_value_history(fund_code, duration):
-    return flask.jsonify(requests.get('http://localhost:8080/efunds/'+fund_code+'/values/'+duration).json())
- 
+    return flask.jsonify(requests.get('http://localhost:8080/efunds/' + fund_code + '/values/' + duration).json())

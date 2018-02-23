@@ -27,7 +27,7 @@ os.environ['REQUESTS_CA_BUNDLE'] = certifi.old_where()
 
 from app.request_tasks import schedule_timer
 from app.itchat_tasks import start_itchat
-@app.before_first_request
+#@app.before_first_request
 def init_schedule_timer():
     print('start')
     # init schedule timer of request sender
