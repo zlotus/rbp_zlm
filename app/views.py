@@ -48,6 +48,11 @@ def xauusd_files(path):
     return flask.send_from_directory(XAUUSD_DIST_DIR, path)
 
 
+@app.route('/zlmxauusd/<duration>/from/<from_date>', methods=['GET'])
+def get_xauusd_history(duration, from_date):
+    return flask.jsonify(requests.get('http://localhost:8080/zlmxauusd/'+duration+'/from/'+from_date).json())
+
+
 # publish efunds front-end to port 80
 @app.route('/fund', methods=['GET'])
 def entry_efunds_dist():
